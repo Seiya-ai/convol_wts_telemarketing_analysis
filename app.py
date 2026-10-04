@@ -76,7 +76,7 @@ for col, (_, row) in zip(
 
 st.subheader("初回架電タイミング別の受注率")
 
-plt.rcParams["font.family"] = "Yu Gothic"
+plt.rcParams["font.family"] = "Noto Sans CJK JP"
 
 fig, ax = plt.subplots(figsize=(5, 3.0))
 
