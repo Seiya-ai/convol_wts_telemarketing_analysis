@@ -135,7 +135,7 @@ for bar, total, orders, rate in zip(
     )
 
 ax.set_xlabel(
-    "Days from OK date to first call",
+    "Days from atokaku OK date to first call",
     fontsize=5,
 )
 
