@@ -131,17 +131,17 @@ for bar, total, orders, rate in zip(
         f"{rate:.1f}%",
         ha="center",
         va="bottom",
-        fontsize=5,
+        fontsize=1,
     )
 
 ax.set_xlabel(
     "Days from OK date to first call",
-    fontsize=5,
+    fontsize=1,
 )
 
 ax.set_ylabel(
     "WTS Order Rate (%)",
-    fontsize=5,
+    fontsize=1,
 )
 
 ax.set_ylim(
