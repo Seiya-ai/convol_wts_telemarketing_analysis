@@ -108,7 +108,7 @@ plot_labels = [
     "2+ days later",
 ]
 
-fig, ax = plt.subplots(figsize=(5, 3))
+fig, ax = plt.subplots(figsize=(3, 2))
 
 bars = ax.bar(
     plot_labels,
@@ -131,17 +131,17 @@ for bar, total, orders, rate in zip(
         f"{rate:.1f}%",
         ha="center",
         va="bottom",
-        fontsize=9,
+        fontsize=5,
     )
 
 ax.set_xlabel(
     "Days from OK date to first call",
-    fontsize=8,
+    fontsize=5,
 )
 
 ax.set_ylabel(
     "WTS Order Rate (%)",
-    fontsize=8,
+    fontsize=5,
 )
 
 ax.set_ylim(
