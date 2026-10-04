@@ -1,12 +1,32 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import math
+
+
+# =========================
+# ページ設定
+# =========================
 
 st.set_page_config(
     page_title="初回架電タイミング分析",
     layout="wide",
 )
+
+
+# =========================
+# セクション間の余白
+# =========================
+
+def add_section_space(height=40):
+    st.markdown(
+        f"<div style='height: {height}px;'></div>",
+        unsafe_allow_html=True,
+    )
+
+
+# =========================
+# タイトル
+# =========================
 
 st.title("初回架電タイミングとWTS受注率")
 
@@ -49,6 +69,8 @@ df_order_rate["受注率"] = (
 # KPI
 # =========================
 
+add_section_space()
+
 st.subheader("受注率")
 
 col1, col2, col3 = st.columns(3)
@@ -74,18 +96,27 @@ for col, (_, row) in zip(
 # グラフ
 # =========================
 
+add_section_space()
+
 st.subheader("初回架電タイミング別の受注率")
 
-plt.rcParams["font.family"] = "Noto Sans CJK JP"
-plt.rcParams["axes.unicode_minus"] = False
+# Matplotlib内は英語にして
+# 日本語フォント問題を完全に回避
+plot_labels = [
+    "Same day",
+    "1 day later",
+    "2+ days later",
+]
 
-fig, ax = plt.subplots(figsize=(5, 3.0))
+fig, ax = plt.subplots(figsize=(7, 4))
 
 bars = ax.bar(
-    df_order_rate["架電タイミング"],
+    plot_labels,
     df_order_rate["受注率"],
+    color="#287CB5",
 )
 
+# 棒の上に受注数・受注率を表示
 for bar, total, orders, rate in zip(
     bars,
     df_order_rate["顧客数"],
@@ -95,7 +126,7 @@ for bar, total, orders, rate in zip(
     ax.text(
         bar.get_x() + bar.get_width() / 2,
         bar.get_height() + 0.3,
-        f"{int(orders)}/{int(total)}件\n"
+        f"{int(orders)}/{int(total)}\n"
         f"{rate:.1f}%",
         ha="center",
         va="bottom",
@@ -103,18 +134,18 @@ for bar, total, orders, rate in zip(
     )
 
 ax.set_xlabel(
-    "後確OK日から初回架電までの日数",
-    fontsize=9,
+    "Days from OK date to first call",
+    fontsize=10,
 )
 
 ax.set_ylabel(
-    "WTS受注率 (%)",
-    fontsize=9,
+    "WTS Order Rate (%)",
+    fontsize=10,
 )
 
 ax.set_ylim(
     0,
-    df_order_rate["受注率"].max() + 6,
+    df_order_rate["受注率"].max() + 5,
 )
 
 ax.grid(
@@ -122,12 +153,25 @@ ax.grid(
     alpha=0.3,
 )
 
-st.pyplot(fig, use_container_width=False)
+# 上と右の枠線を少し薄くする
+ax.spines["top"].set_visible(False)
+ax.spines["right"].set_visible(False)
+
+plt.tight_layout()
+
+st.pyplot(
+    fig,
+    use_container_width=False,
+)
+
+plt.close(fig)
 
 
 # =========================
 # 集計表
 # =========================
+
+add_section_space()
 
 st.subheader("集計結果")
 
@@ -148,6 +192,8 @@ st.dataframe(
 # =========================
 # 1日 vs 2日以降
 # =========================
+
+add_section_space()
 
 st.subheader("1日と2日以降の比較")
 
@@ -181,53 +227,10 @@ col3.metric(
 
 
 # =========================
-# 比率検定
-# =========================
-
-# p_pool = (
-#     success_1 + success_2
-# ) / (
-#     total_1 + total_2
-# )
-
-# se = math.sqrt(
-#     p_pool
-#     * (1 - p_pool)
-#     * (
-#         1 / total_1
-#         + 1 / total_2
-#     )
-# )
-
-# z_stat = (
-#     p1 - p2
-# ) / se
-
-# p_value = math.erfc(
-#     abs(z_stat)
-#     / math.sqrt(2)
-# )
-
-# st.write(
-#     f"**p値：{p_value:.3f}**"
-# )
-
-# if p_value < 0.05:
-#     st.success(
-#         "1日と2日以降の受注率には、"
-#         "統計的に有意な差が確認されました。"
-#     )
-# else:
-#     st.info(
-#         "1日の方が受注率は高いものの、"
-#         "今回のデータでは統計的に有意な差は"
-#         "確認できませんでした。（つまり、サンプルの誤差があるかもしれないは否定できない）"
-#     )
-
-
-# =========================
 # 考察
 # =========================
+
+add_section_space()
 
 st.subheader("考察")
 
@@ -241,24 +244,38 @@ st.markdown(
 1日で架電したケースと比較して
 **受注率が約2.7ポイント低下**しています。
 
-後確後に電話が入ることを一声干渉しているということで、出来るだけ同日に架電することで受注率の向上が見込めると考えます。
+後確OK日から実際の架電までにタイムラグが発生すると、
+受注率が低下する傾向が見られます。
 
-また、0日については27件とサンプル数が少ないため、受注率18.5%は参考値として扱う必要がありますが、逆を言うと、サンプルが増えれば
-受注率がもっと上がるかもしれません。
+そのため、できるだけ**同日、遅くとも翌日までに架電することで、
+受注率の向上が期待できる**と考えられます。
+
+一方、0日については27件とサンプル数が少ないため、
+18.5%という受注率は参考値として扱う必要があります。
+今後、同日架電のサンプル数を増やすことで、
+この傾向が再現するかを確認する必要があります。
 """
 )
+
 
 # =========================
 # 今後の提案
 # =========================
-# =========================
+
+add_section_space()
 
 st.subheader("今後の提案")
 
 st.markdown(
     """
-一声干渉から実際に架電時間にラグがあるにはリストにインポートする作業が発生していることが原因と考えられます。
+現在、後確OKから実際の架電までにタイムラグが発生する要因として、
+リストをインポートする作業が発生していることが考えられます。
 
-その作業をFile Makerと連携して自動化することで、よりダイナミックに架電が出来受注率の向上につながります。
+この作業を**FileMakerと連携して自動化**することで、
+後確OKから架電までの時間を短縮し、
+よりタイムリーに架電できる仕組みを構築できます。
+
+その結果、初回架電の早期化による
+**受注率向上につながる可能性があります。**
 """
 )
