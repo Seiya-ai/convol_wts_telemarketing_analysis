@@ -144,6 +144,17 @@ ax.set_ylabel(
     fontsize=3,
 )
 
+# ★ x軸・y軸の文字サイズ
+ax.tick_params(
+    axis="x",
+    labelsize=3,
+)
+
+ax.tick_params(
+    axis="y",
+    labelsize=3,
+)
+
 ax.set_ylim(
     0,
     df_order_rate["受注率"].max() + 5,
