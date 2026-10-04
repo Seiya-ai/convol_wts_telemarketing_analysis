@@ -108,12 +108,13 @@ plot_labels = [
     "2+ days later",
 ]
 
-fig, ax = plt.subplots(figsize=(7, 4))
+fig, ax = plt.subplots(figsize=(5, 3))
 
 bars = ax.bar(
     plot_labels,
     df_order_rate["受注率"],
     color="#287CB5",
+    width=0.6,
 )
 
 # 棒の上に受注数・受注率を表示
@@ -130,17 +131,17 @@ for bar, total, orders, rate in zip(
         f"{rate:.1f}%",
         ha="center",
         va="bottom",
-        fontsize=11,
+        fontsize=9,
     )
 
 ax.set_xlabel(
     "Days from OK date to first call",
-    fontsize=10,
+    fontsize=8,
 )
 
 ax.set_ylabel(
     "WTS Order Rate (%)",
-    fontsize=10,
+    fontsize=8,
 )
 
 ax.set_ylim(
