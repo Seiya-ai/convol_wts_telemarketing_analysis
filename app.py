@@ -131,28 +131,28 @@ for bar, total, orders, rate in zip(
         f"{rate:.1f}%",
         ha="center",
         va="bottom",
-        fontsize=3,
+        fontsize=5,
     )
 
 ax.set_xlabel(
     "Days from OK date to first call",
-    fontsize=3,
+    fontsize=5,
 )
 
 ax.set_ylabel(
     "WTS Order Rate (%)",
-    fontsize=3,
+    fontsize=5,
 )
 
 # ★ x軸・y軸の文字サイズ
 ax.tick_params(
     axis="x",
-    labelsize=3,
+    labelsize=5,
 )
 
 ax.tick_params(
     axis="y",
-    labelsize=3,
+    labelsize=5,
 )
 
 ax.set_ylim(
